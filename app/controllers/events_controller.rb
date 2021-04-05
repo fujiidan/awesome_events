@@ -3,6 +3,8 @@ skip_before_action :authenticate, only: :show
 
   def show
     @event = Event.find(params[:id])
+    @tickets = @event.tickets.includes(:user).order(:created_at)
+    @ticket = current_user && current_user.tickets.find_by(event: @event)
   end
 
   def new
@@ -32,7 +34,7 @@ skip_before_action :authenticate, only: :show
     @event.destroy!
     redirect_to root_path, notice: "削除しました"
   end
-  
+
   private
 
   def event_params
